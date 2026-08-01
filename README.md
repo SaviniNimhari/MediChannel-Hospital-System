@@ -3,7 +3,7 @@
 A full-stack web application built with React, Node.js, Express, and PostgreSQL.
 
 ## Features
-- **Role-based Authentication**: Admin, Doctor, and Patient roles.
+- **Role-based Authentication**: Admin, Doctor, and Patient roles. 
 - **E-Channelling**: Patients can search for doctors by specialization and book appointments.
 - **Admin Dashboard**: Manage doctors, patients, departments, and view hospital stats.
 - **Doctor Dashboard**: Manage daily schedules and patient appointments.
