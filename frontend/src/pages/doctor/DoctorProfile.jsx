@@ -122,7 +122,7 @@ const DoctorProfile = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Consultation Fee ($)</label>
+              <label className="form-label">Consultation Fee (Rs.)</label>
               <input 
                 type="number" className="form-input"
                 value={formData.channeling_fee} onChange={e => setFormData({...formData, channeling_fee: e.target.value})}

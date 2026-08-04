@@ -4,7 +4,7 @@ import API from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Calendar, Clock, CheckCircle, Users, Activity, 
-  TrendingUp, DollarSign, ArrowRight, UserCircle, 
+  TrendingUp, Wallet, ArrowRight, UserCircle, 
   ChevronRight, CalendarDays
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -34,7 +34,7 @@ const DoctorDashboard = () => {
     { label: "Today's Schedule", value: stats?.todayAppointments || 0, icon: Clock, color: '#0d9488', bg: '#eff6ff' },
     { label: "Consultations Completed", value: stats?.completedAppointments || 0, icon: CheckCircle, color: '#10b981', bg: '#ecfdf5' },
     { label: "Upcoming Patients", value: stats?.upcomingAppointments || 0, icon: CalendarDays, color: '#f59e0b', bg: '#fffbeb' },
-    { label: "Gross Earnings (LKR)", value: stats?.totalEarnings || 0, icon: DollarSign, color: '#8b5cf6', bg: '#f5f3ff' }
+    { label: "Gross Earnings (Rs.)", value: `Rs. ${stats?.totalEarnings || 0}`, icon: Wallet, color: '#8b5cf6', bg: '#f5f3ff' }
   ];
 
   return (
