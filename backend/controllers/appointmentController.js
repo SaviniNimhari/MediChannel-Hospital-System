@@ -70,6 +70,7 @@ const createAppointment = async (req, res) => {
     res.status(201).json(appointment);
   } catch (err) {
     await client.query('ROLLBACK');
+    
     console.error(err.message);
     if (err.message.includes('Doctor is not available') || err.message.includes('already booked')) {
       return res.status(400).json({ message: err.message });
