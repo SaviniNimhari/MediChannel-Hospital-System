@@ -19,11 +19,8 @@ BEGIN
  
     INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, appointment_status, reason) 
     VALUES (p_patient_id, p_doctor_id, p_appt_date, p_appt_time, 'Pending', p_reason); 
-     
-    COMMIT; -- Explicit transaction commit 
 EXCEPTION 
     WHEN OTHERS THEN 
-        ROLLBACK; -- Explicit atomic rollback 
         RAISE; 
 END; 
 $$ LANGUAGE plpgsql; 

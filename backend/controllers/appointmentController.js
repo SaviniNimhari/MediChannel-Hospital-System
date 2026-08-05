@@ -38,24 +38,45 @@ const getAppointmentById = async (req, res) => {
 };
 
 const createAppointment = async (req, res) => {
-  const { patient_id, doctor_id, appointment_date, appointment_time, reason } = req.body;
+  const { patient_id, doctor_id, appointment_date, appointment_time, reason, payment_method = 'Card' } = req.body;
+  const client = await db.connect();
+
   try {
-    await db.query(
-      'CALL sp_book_appointment($1, $2, $3, $4, $5)',
+    await client.query('BEGIN');
+
+    const appointmentResult = await client.query(
+      `INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, appointment_status, reason)
+       VALUES ($1, $2, $3, $4, 'Pending', $5)
+       RETURNING *`,
       [patient_id, doctor_id, appointment_date, appointment_time, reason]
     );
-    // sp_book_appointment doesn't return the row. Fetch it.
-    const result = await db.query(
-      'SELECT * FROM appointments WHERE patient_id = $1 AND doctor_id = $2 ORDER BY appointment_id DESC LIMIT 1',
-      [patient_id, doctor_id]
+
+    const appointment = appointmentResult.rows[0];
+
+    const doctorFeeResult = await client.query(
+      'SELECT channeling_fee FROM doctors WHERE doctor_id = $1',
+      [doctor_id]
     );
-    res.status(201).json(result.rows[0]);
+
+    const amount = doctorFeeResult.rows[0]?.channeling_fee ?? 50.00;
+
+    await client.query(
+      `INSERT INTO payments (appointment_id, patient_id, amount, payment_method, payment_status)
+       VALUES ($1, $2, $3, $4, 'Pending')`,
+      [appointment.appointment_id, patient_id, amount, payment_method]
+    );
+
+    await client.query('COMMIT');
+    res.status(201).json(appointment);
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error(err.message);
-    if (err.message.includes('Doctor is not available')) {
+    if (err.message.includes('Doctor is not available') || err.message.includes('already booked')) {
       return res.status(400).json({ message: err.message });
     }
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Unable to create appointment. Please try again.' });
+  } finally {
+    client.release();
   }
 };
 

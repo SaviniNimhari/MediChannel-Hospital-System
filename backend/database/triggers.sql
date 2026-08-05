@@ -10,6 +10,12 @@ CREATE OR REPLACE FUNCTION trg_func_auto_create_payment() RETURNS TRIGGER AS $$
 DECLARE
     doc_fee NUMERIC(10,2);
 BEGIN
+    IF EXISTS (
+        SELECT 1 FROM payments WHERE appointment_id = NEW.appointment_id
+    ) THEN
+        RETURN NEW;
+    END IF;
+
     SELECT channeling_fee INTO doc_fee FROM doctors WHERE doctor_id = NEW.doctor_id;
     INSERT INTO payments (appointment_id, patient_id, amount, payment_method, payment_status)
     VALUES (NEW.appointment_id, NEW.patient_id, COALESCE(doc_fee, 50.00), 'Card', 'Pending');
