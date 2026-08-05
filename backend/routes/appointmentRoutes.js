@@ -8,12 +8,14 @@ const {
   updateAppointment, 
   deleteAppointment, 
   getAppointmentsByPatient, 
-  getAppointmentsByDoctor 
+  getAppointmentsByDoctor,
+  getAuditLogs
 } = require('../controllers/appointmentController');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
 // PRIORITY ROUTES (Specific paths must come BEFORE generic :id)
+router.get('/audit-logs', authMiddleware, roleMiddleware(['Admin']), getAuditLogs);
 router.get('/booked-slots/:doctorId', async (req, res) => {
   const { date } = req.query;
   const { doctorId } = req.params;

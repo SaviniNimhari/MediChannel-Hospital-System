@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Users, UserPlus, Calendar, CreditCard, Building2,
@@ -21,6 +21,7 @@ const Sidebar = () => {
       section: 'INTELLIGENCE', links: [
         { name: 'Analytics Hub', path: '/admin', icon: Home },
         { name: 'Forensic Reports', path: '/admin/reports', icon: BarChart3 },
+        { name: 'System Audit Logs', path: '/admin/audit-logs', icon: Activity },
       ]
     },
     {

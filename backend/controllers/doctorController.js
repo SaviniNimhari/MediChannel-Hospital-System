@@ -84,12 +84,16 @@ const deleteDoctor = async (req, res) => {
     const doctorRes = await db.query('SELECT user_id FROM doctors WHERE doctor_id = $1', [id]);
     if (doctorRes.rows.length > 0) {
       const userId = doctorRes.rows[0].user_id;
+      await db.query('DELETE FROM doctors WHERE doctor_id = $1', [id]);
       await db.query('DELETE FROM users WHERE user_id = $1', [userId]);
     }
     res.json({ message: 'Doctor and associated user deleted' });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error('Delete doctor error:', err.message);
+    if (err.message.includes('Cannot delete doctor') || err.message.includes('pending or confirmed appointments')) {
+      return res.status(400).json({ message: err.message });
+    }
+    res.status(500).json({ message: err.message || 'Server Error' });
   }
 };
 

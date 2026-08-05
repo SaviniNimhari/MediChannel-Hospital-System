@@ -103,7 +103,10 @@ const updateAppointment = async (req, res) => {
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    if (err.message.includes('Doctor is already booked') || err.message.includes('already booked')) {
+      return res.status(400).json({ message: err.message });
+    }
+    res.status(500).json({ message: err.message || 'Server Error' });
   }
 };
 
@@ -155,6 +158,31 @@ const getAppointmentsByDoctor = async (req, res) => {
   }
 };
 
+const getAuditLogs = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        l.log_id,
+        l.appointment_id,
+        l.old_status,
+        l.new_status,
+        l.changed_at,
+        p.full_name as patient_name,
+        d.full_name as doctor_name
+      FROM appointment_audit_log l
+      LEFT JOIN appointments a ON l.appointment_id = a.appointment_id
+      LEFT JOIN patients p ON a.patient_id = p.patient_id
+      LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
+      ORDER BY l.changed_at DESC
+    `;
+    const result = await db.query(query);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching audit logs:', err.message);
+    res.status(500).json({ message: 'Server Error fetching trigger audit logs' });
+  }
+};
+
 module.exports = { 
   getAppointments, 
   getAppointmentById, 
@@ -162,5 +190,7 @@ module.exports = {
   updateAppointment, 
   deleteAppointment, 
   getAppointmentsByPatient, 
-  getAppointmentsByDoctor 
+  getAppointmentsByDoctor,
+  getAuditLogs
 };
+

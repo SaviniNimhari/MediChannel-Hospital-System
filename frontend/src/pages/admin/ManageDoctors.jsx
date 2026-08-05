@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import API from '../../api/axios';
 import { 
@@ -118,8 +118,12 @@ const ManageDoctors = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to remove this specialist from the registry?')) {
-      await API.delete(`/doctors/${id}`);
-      fetchData();
+      try {
+        await API.delete(`/doctors/${id}`);
+        fetchData();
+      } catch (err) {
+        alert(err.response?.data?.message || 'Error deleting specialist.');
+      }
     }
   };
 

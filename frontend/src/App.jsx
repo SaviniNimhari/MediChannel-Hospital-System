@@ -22,6 +22,7 @@ import ManageAppointments from './pages/admin/ManageAppointments';
 import ManagePayments from './pages/admin/ManagePayments';
 import ManageInquiries from './pages/admin/ManageInquiries';
 import Reports from './pages/admin/Reports';
+import AuditLogs from './pages/admin/AuditLogs';
 
 // Doctor Pages
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -59,6 +60,7 @@ function App() {
             <Route path="/admin/payments" element={<ProtectedRoute roles={['Admin']}><ManagePayments /></ProtectedRoute>} />
             <Route path="/admin/inquiries" element={<ProtectedRoute roles={['Admin']}><ManageInquiries /></ProtectedRoute>} />
             <Route path="/admin/reports" element={<ProtectedRoute roles={['Admin']}><Reports /></ProtectedRoute>} />
+            <Route path="/admin/audit-logs" element={<ProtectedRoute roles={['Admin']}><AuditLogs /></ProtectedRoute>} />
 
             {/* Doctor Routes */}
             <Route path="/doctor" element={<ProtectedRoute roles={['Doctor']}><DoctorDashboard /></ProtectedRoute>} />
